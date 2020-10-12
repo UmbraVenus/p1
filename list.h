@@ -9,7 +9,7 @@ using namespace std;
 
 class LinkedList
 {
-    public:
+private:
     struct node
     {
         node(artist& anartist)
@@ -17,11 +17,9 @@ class LinkedList
             a = anartist;
             prev = next = nullptr;
         }
-        node(song &asong, node *anartist){
+        node(song &asong){
             s = asong;
-            anartist->s = asong;
-            prev = anartist;
-            next = nullptr;
+            prev = next = nullptr;
         }
         ~node(){
 			prev = next = nullptr;
@@ -37,17 +35,17 @@ public:
 	LinkedList();
 	~LinkedList();
 
-	node *add(artist& anartist);
-    void add(song &asong, node *artist);
+	void add(artist& anartist);
+    int find(int aviews);
+    void add(song &asong);
 
-
-    node *split(node *head);
-    node *merge(node *first, node *second);
-    node *mergeSort(node *head);
+    // node *split(node *head);
+    // node *merge(node *first, node *second);
+    // node *mergeSort(node *head);
     void del(int m);
 
     void displayArtists();
-    void displaySongs(node *newartist);
+    void displaySongs();
 };
 
 #endif // _LINKED_LIST_

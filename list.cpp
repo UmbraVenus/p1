@@ -22,11 +22,10 @@ LinkedList::~LinkedList(){
 }
 
 // adding artist only
-LinkedList::node *LinkedList::add(artist& anartist){
+void LinkedList::add(artist& anartist){
     cout << "...Calling add method on artist only..." << endl;
     node *newNode = new node(anartist);
     node* current; 
-  
     if (!head){
         head = newNode;
     }
@@ -44,8 +43,8 @@ LinkedList::node *LinkedList::add(artist& anartist){
         newNode->prev = current; 
     }
     size++;
-    return newNode;
 }
+
 /*
 LinkedList::node *LinkedList::split(LinkedList::node *head){
     cout << "...Calling split method..." << endl;
@@ -95,68 +94,136 @@ LinkedList::node *LinkedList::mergeSort(node * newnode){
     return merge(newnode, second);
 }
 
-
-LinkedList::node *LinkedList::get(artist &anartist){
-    cout << "Calling get method" << endl;
-    node *curr = head;
-    while (curr)
-    {
-        if (curr->a.getName() == anartist.getName()){
-            return curr;
+*/
+int LinkedList::find(int aviews){
+    cout << "...Calling find method on..." << aviews << endl;
+    node *curr = head->next;
+    int count = 0;
+    if (curr->s.getViews() < aviews && curr != NULL){ 
+        ++count;
+        cout << count << endl;
+        return count;
+    }
+    else{
+        if (curr->next != NULL){
+            head = head->next;
+            return find(aviews);
         }
-        curr = curr->next;
+        else{
+            return false;
+        }
     }
 }
-*/
 
-void LinkedList::add(song & asong, node *anartist){
+
+void LinkedList::add(song &asong){
     cout << "adding songs" << endl;
-    node *newNode = new node(asong, anartist);
-    cout << newNode->s.getTitle() << endl;
-    cout << newNode->prev->s.getTitle() << endl;
-    node *current = anartist->next;
-    if (!current){
-        cout << "there" << endl;
-        
-        anartist->next = newNode;
-        
-        
-        cout << anartist->next->s.getTitle() << endl;
+    node *newNode = new node(asong);
+    node* current; 
+    if (!head->next){
+        head->next = newNode;
     }
     else {
-        cout << "here" << endl;
-        while (current->s.getViews() < newNode->s.getViews())
-        {
+        current = head->next;
+        /* Make the appropriate links */
+        while (current->next && current->s.getViews()> newNode->s.getViews()){
             current = current->next;
         }
-        anartist->next = newNode;
-        newNode->next = current;
-        current->prev = newNode;
+        newNode->next = current->next; 
+  
+        // if the new node is not inserted 
+        // at the end of the list 
+        if (current->next != NULL) 
+            newNode->next->prev = newNode; 
+  
+        current->next = newNode; 
+        newNode->prev = current; 
     }
-    
-
     size++;
 }
 
 void LinkedList::del(int m){
-    cout << "...Calling delete method on..." << endl;
-    node *curr = head;
-    node *tmp = curr->next;
-    int view = curr->s.getViews();
-    if (curr == tail){
-        cout << "End of List, delete complete" << endl;
-    }
-    else {
-        if (view == m)
-        {
-            curr->prev->next = curr->next;
-            curr->next->prev = curr->prev;
-            delete curr;
+    cout << "...Calling delete method on..." << m << endl;
+    node *ptr = head->next;
+    //change the next and prev only if they are not null
+    while(ptr){
+        if (ptr->s.getViews() < m){
+            if(ptr->next != NULL)
+                ptr->next->prev = ptr->prev;
+            
+ 
+            if(ptr->prev != NULL)
+                ptr->prev->next = ptr->next;
+               
+            delete(ptr); //delete the node
         }
-        del(m);
+        ptr = ptr->next;
     }
 }
 
+    /*
+    node *tmp = tail;
+    int count = find(m);
+    if (count >= 1)
+    {
+        for (int i = 0; i <= count; i++)
+        {
+            cout << "count" << endl;
+            if (tmp == NULL)
+            {
+                cout << "Nodata" << endl;
+            }
+            else{
+                node *curr = tmp;
+                curr->next->prev = tmp->prev->prev;
+                curr->prev->next = 
+                delete tmp;
+                cout << "count" << endl;
+                return true;
+            }
+            cout << "s" << endl;
+        }
+    }
+    else{
+        cout << "nothing to delete" << endl;
+        return false;
+    }
+}*/
+    /*
+    if (LinkedList::find(m))
+    {
+        if (tmp->s.getViews() < m){
+            head->next = tmp->next;
+            delete tmp;
+            cout << m << " deleted" << endl;
+            return true;
+        }
+        else {
+            while (tmp!= NULL){ 
+                if (tmp->s.getViews() < m){
+                    node *curr = tmp;
+                    curr->prev->next = tmp->next;
+                    curr->next->prev = tmp->prev;
+                    delete tmp;
+                    cout << m << " 2deleted" << endl;
+                    return true;
+                }
+                tmp = tmp->next;
+            }
+            cout << "Unable to delete character" << endl;
+            return false;
+        }
+    }
+    else{
+    if (head->next){
+        head = head->next;
+        return del(m);
+    }
+    cout << "No character found" << endl;
+    }
+    return false;
+}
+*/
 void LinkedList::displayArtists(){
     cout << "atist " << endl;
     node *curr = head;
@@ -172,25 +239,25 @@ void LinkedList::displayArtists(){
         */
     for (curr = head; curr; curr = curr->next)
     {
-        cout << curr->a.getName() << endl;
-        cout << curr->a.getStory() << endl;
-        cout << curr->a.getInfo() << endl;
+        cout << "Name: " << curr->a.getName() << endl;
+        cout << "Story: " << curr->a.getStory() << endl;
+        cout << "Info: " << curr->a.getInfo() << endl;
     }
     cout << endl;
 }
 
-void LinkedList::displaySongs(node *anartist){
+void LinkedList::displaySongs(){
     cout << "s" << endl;
-    node *curr = anartist;
-    cout << endl
-         << "Display the Songs of " << anartist->a.getName() << endl;
-    for (curr = anartist; curr; curr = curr->next)
+    node *curr;
+    cout << "Display the Songs of " << head->a.getName() << endl;
+    
+    for (curr = head->next; curr; curr = curr->next)
     {
-       
+        cout << "===========" << endl;
         cout << curr->s.getTitle() << endl;
         cout << curr->s.getLength() << endl;
-        cout << curr->s.getViews() << endl;
+        cout << "Views: " << curr->s.getViews() << endl;
         cout << curr->s.getLikes() << endl;
     }
-    cout << endl;
+    
 }
