@@ -6,8 +6,8 @@ class song
 {
 public:
     song();
-    song(char *atitle, float alength, int aviews, int alikes);
-    ~song();
+    song(char *atitle, float alength, int aviews, int alikes);  // Constructor
+    ~song();    // destructor
 
     char *getTitle();
     float getLength();

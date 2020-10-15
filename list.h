@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <cstring>
+#include <fstream>
 #include "song.h"
 #include "artist.h"
 using namespace std;
@@ -35,17 +36,28 @@ public:
 	LinkedList();
 	~LinkedList();
 
+    // Add a new artist
 	void add(artist& anartist);
-    int find(int aviews);
+    // Add a new song to an artist
     void add(song &asong);
 
-    // node *split(node *head);
-    // node *merge(node *first, node *second);
-    // node *mergeSort(node *head);
+    // Check if the song has less than M views
+    int find(int aviews);
+    // Delete all songs with less than M views
     void del(int m);
 
+    // Display all artists
     void displayArtists();
+    // Display all songs for an artist (in order of popularity)
     void displaySongs();
+
+    void loadArtistFromFile(char * fileName);
+
+    LinkedList loadSongsFromArtist(char * Artist);
+
+    void saveArtistToFile(char *name);
+
+    void saveSongsToArtist(char * Artist);
 };
 
 #endif // _LINKED_LIST_

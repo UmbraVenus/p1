@@ -25,76 +25,19 @@ LinkedList::~LinkedList(){
 void LinkedList::add(artist& anartist){
     cout << "...Calling add method on artist only..." << endl;
     node *newNode = new node(anartist);
-    node* current; 
     if (!head){
         head = newNode;
+        tail = newNode;
     }
     else {
-        current = head;
-        /* Make the appropriate links */
-        newNode->next = current->next; 
-  
-        // if the new node is not inserted 
-        // at the end of the list 
-        if (current->next != NULL) 
-            newNode->next->prev = newNode; 
-  
-        current->next = newNode; 
-        newNode->prev = current; 
+        tail->next = newNode;
+		newNode->prev = tail;
+		tail = newNode;
     }
     size++;
 }
 
-/*
-LinkedList::node *LinkedList::split(LinkedList::node *head){
-    cout << "...Calling split method..." << endl;
-    node *fast = head;
-    node *slow = tail;
-    while(fast->next && fast->next->next){
-        fast = fast->next->next;
-        slow = slow->next;
-    }
-    node *temp = slow->next;
-    slow->next = NULL;
-    return temp;
-}
 
-LinkedList::node *LinkedList::merge(node * first, node * second){
-    if (!first){
-        return second;
-    }
-    if (!second){
-        return first;
-    }
-    if(first->s.getViews() <= second->s.getViews()){
-        first->next = merge(first->next, second);
-        first->next->prev = first;  
-        first->prev = NULL;  
-        return first;  
-    }  
-    else
-    {  
-        second->next = merge(first,second->next);  
-        second->next->prev = second;  
-        second->prev = NULL;  
-        return second;  
-    } 
-}
-
-LinkedList::node *LinkedList::mergeSort(node * newnode){
-    cout << "...Calling mergesort method..." << endl;
-    if (!newnode || !newnode->next){
-        return newnode;
-    }
-    node *second = split(newnode);
-
-    newnode = mergeSort(newnode);
-    second = mergeSort(second);
-
-    return merge(newnode, second);
-}
-
-*/
 int LinkedList::find(int aviews){
     cout << "...Calling find method on..." << aviews << endl;
     node *curr = head->next;
@@ -120,11 +63,16 @@ void LinkedList::add(song &asong){
     cout << "adding songs" << endl;
     node *newNode = new node(asong);
     node* current; 
-    if (!head->next){
-        head->next = newNode;
+    if (head==NULL){
+        head = newNode;
+    }
+    else if(head->next && head->s.getViews()<= newNode->s.getViews()){
+        newNode->next = head;
+        newNode->next->prev = newNode;
+        head = newNode;
     }
     else {
-        current = head->next;
+        current = head;
         /* Make the appropriate links */
         while (current->next && current->s.getViews()> newNode->s.getViews()){
             current = current->next;
@@ -140,11 +88,12 @@ void LinkedList::add(song &asong){
         newNode->prev = current; 
     }
     size++;
+    cout << "added";
 }
 
 void LinkedList::del(int m){
     cout << "...Calling delete method on..." << m << endl;
-    node *ptr = head->next;
+    node *ptr = head;
     //change the next and prev only if they are not null
     while(ptr){
         if (ptr->s.getViews() < m){
@@ -161,82 +110,10 @@ void LinkedList::del(int m){
     }
 }
 
-    /*
-    node *tmp = tail;
-    int count = find(m);
-    if (count >= 1)
-    {
-        for (int i = 0; i <= count; i++)
-        {
-            cout << "count" << endl;
-            if (tmp == NULL)
-            {
-                cout << "Nodata" << endl;
-            }
-            else{
-                node *curr = tmp;
-                curr->next->prev = tmp->prev->prev;
-                curr->prev->next = 
-                delete tmp;
-                cout << "count" << endl;
-                return true;
-            }
-            cout << "s" << endl;
-        }
-    }
-    else{
-        cout << "nothing to delete" << endl;
-        return false;
-    }
-}*/
-    /*
-    if (LinkedList::find(m))
-    {
-        if (tmp->s.getViews() < m){
-            head->next = tmp->next;
-            delete tmp;
-            cout << m << " deleted" << endl;
-            return true;
-        }
-        else {
-            while (tmp!= NULL){ 
-                if (tmp->s.getViews() < m){
-                    node *curr = tmp;
-                    curr->prev->next = tmp->next;
-                    curr->next->prev = tmp->prev;
-                    delete tmp;
-                    cout << m << " 2deleted" << endl;
-                    return true;
-                }
-                tmp = tmp->next;
-            }
-            cout << "Unable to delete character" << endl;
-            return false;
-        }
-    }
-    else{
-    if (head->next){
-        head = head->next;
-        return del(m);
-    }
-    cout << "No character found" << endl;
-    }
-    return false;
-}
-*/
+    
 void LinkedList::displayArtists(){
     cout << "atist " << endl;
     node *curr = head;
-    /*
-    cout << endl
-         << "Displaying the Artists: " << endl;
-    if (!curr->next){
-        cout << curr->a.getName() << endl;
-        cout << curr->a.getStory() << endl;
-        cout << curr->a.getInfo() << endl;
-    }
-    else {
-        */
     for (curr = head; curr; curr = curr->next)
     {
         cout << "Name: " << curr->a.getName() << endl;
@@ -248,10 +125,8 @@ void LinkedList::displayArtists(){
 
 void LinkedList::displaySongs(){
     cout << "s" << endl;
-    node *curr;
-    cout << "Display the Songs of " << head->a.getName() << endl;
-    
-    for (curr = head->next; curr; curr = curr->next)
+    node *curr = head;
+    for (curr = head; curr; curr = curr->next)
     {
         cout << "===========" << endl;
         cout << curr->s.getTitle() << endl;
@@ -259,5 +134,177 @@ void LinkedList::displaySongs(){
         cout << "Views: " << curr->s.getViews() << endl;
         cout << curr->s.getLikes() << endl;
     }
+    cout << "=====";
+}
+
+void LinkedList::loadArtistFromFile(char * fileName)
+{
+    ifstream in;
+    song Song;
+    const int MAX_CHAR = 1001;
+    // Artist
+    char currName[MAX_CHAR];
+    char currStory[MAX_CHAR];
+    char currInfo[MAX_CHAR];
     
+
+    in.open(fileName);
+
+	if(!in)
+	{
+		cerr << "Fail to open " << fileName << " for reading!" << endl;
+		exit(1);
+	}
+
+    // Split artists and songs by ";"
+    // Artist and their songs are on the same line
+    while(!in.eof()){
+        // Get artist(s)
+        in.getline(currName, MAX_CHAR);
+        in.getline(currStory, MAX_CHAR);
+        in.getline(currInfo, MAX_CHAR);
+        artist *Artist =  new artist(currName, currStory, currInfo);
+        add(*Artist);
+        cout << currName << " added." << endl;
+        cout << currStory << " added." << endl;
+        cout << currInfo << " added." << endl;
+    }
+    in.close();
+    cout << "File closed" << endl;
+}
+
+LinkedList LinkedList::loadSongsFromArtist(char * Artist){
+    LinkedList alist;
+    ifstream in;
+    int MAX_CHAR = 1000;
+    // song
+    char currTitle[MAX_CHAR];
+    char currLength[MAX_CHAR];
+    char currViews[MAX_CHAR];
+    char currLikes[MAX_CHAR];
+    char ext[] = ".txt";
+
+    double clength;
+    int cviews;
+    int clikes;
+
+    char *fileName = strcat(Artist, ext);
+    
+
+    in.open(fileName);
+	if(!in)
+	{
+		cerr << "Fail to open " << fileName << " load songs from artist for reading!" << endl;
+		exit(1);
+	}
+
+    while(!in.eof()){
+        // Get artist(s)
+        in.getline(currTitle, MAX_CHAR);
+        in.getline(currLength, MAX_CHAR);
+        in.getline(currViews, MAX_CHAR);
+        in.getline(currLikes, MAX_CHAR);
+        clength = atof(currLength);
+        cviews = atoi(currViews);
+        clikes = atoi(currLikes);
+        song *Song = new song(currTitle, clength, cviews, clikes);
+        alist.add(*Song);
+    }
+    in.close();
+    cout << "File Closed" << endl;
+    return alist;
+}
+
+void LinkedList::saveArtistToFile(char *fileName){
+    ofstream	out;
+    int MAX_CHAR = 250;
+
+	out.open(fileName);
+	if(!out)
+	{
+		cerr << "Fail to open " << endl;
+		exit(1);
+	}
+
+	char newName[MAX_CHAR];
+	char newStory[MAX_CHAR];
+	char newInfo[MAX_CHAR];
+	cout << " ==== Input the artist's name >> ";
+    cin.getline(newName, MAX_CHAR);
+    
+    cout << "\n ==== Input the artist's story >> ";
+    cin.getline(newStory, MAX_CHAR);
+    
+	cout << "\n ==== Input the artist's information >> ";
+    cin.getline(newInfo, MAX_CHAR);
+    
+    artist *Artist =  new artist(newName, newStory, newInfo);
+    add(*Artist);
+    for(node * curr=head; curr; curr=curr->next)
+	{
+		out << curr->a.getName() << endl;
+        out << curr->a.getStory() << endl;
+        out << curr->a.getInfo() << endl;
+	}
+    out.close();
+    char ext[] = ".txt";
+
+    char *file = strcat(newName, ext);
+    cout << file << endl;
+
+    ofstream f(file);
+}
+
+void LinkedList::saveSongsToArtist(char * Artist){
+    ofstream out;
+    int MAX_CHAR = 250;
+    char currTitle[MAX_CHAR];
+    char currLength[MAX_CHAR];
+    char currViews[MAX_CHAR];
+    char currLikes[MAX_CHAR];
+    char ext[] = ".txt";
+
+    double clength;
+    int cviews;
+    int clikes;
+    char *art = strcpy(art, Artist);
+
+    char *fileName = strcat(Artist, ext);
+    cout << fileName << endl;
+
+    out.open(fileName);
+	if(!out)
+	{
+		cerr << "Fail to open " << fileName << " save songs to artist for reading!" << endl;
+		exit(1);
+	}
+
+	cout << " ==== Input the song title >> ";
+    cin.getline(currTitle, MAX_CHAR);
+    
+    cout << " ==== Input the song length >> ";
+    cin.getline(currLength, MAX_CHAR);
+    
+	cout << " ==== Input the song views >> ";
+    cin.getline(currViews, MAX_CHAR);
+
+	cout << " ==== Input the song likes >> ";
+    cin.getline(currLikes, MAX_CHAR);
+    
+    clength = atof(currLength);
+    cviews = atoi(currViews);
+    clikes = atoi(currLikes);
+    song *Song = new song(currTitle, clength, cviews, clikes);
+    LinkedList alist = LinkedList::loadSongsFromArtist(art);
+    alist.add(*Song);
+
+    for(node * curr=alist.head; curr; curr=curr->next)
+	{
+		out << curr->s.getTitle() << endl;
+        out << curr->s.getLength() << endl;
+        out << curr->s.getViews() << endl;
+        out << curr->s.getLikes() << endl;
+	}
+    
+    out.close();
 }

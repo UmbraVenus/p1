@@ -7,8 +7,8 @@ class artist
 public:
 	artist();
 	artist(artist& aartist);    // One single object
-    artist(char *name, char *story, char * info);
-    ~artist();
+    artist(char *name, char *story, char * info);  // constructor
+    ~artist();                                     // destructor;
 
     char *getName();
     char *getStory();
