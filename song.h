@@ -1,3 +1,11 @@
+/*
+	Name: 		Shijie Ren
+	Instructor: Li Liang
+	Date: 		Oct 15, 2020
+	Program: 	Project1/song.h
+	Info: 		Implementation of basic song class - data only
+*/
+
 #include <iostream>
 using namespace std;
 #include <cstring>

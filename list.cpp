@@ -1,9 +1,20 @@
+/*
+	Name: 		Shijie Ren
+	Instructor: Li Liang
+	Date: 		Oct 15, 2020
+	Program: 	Project1/list.cpp
+	Info: 		Implementation of LinkedList class - contains the main method
+                involving pointers, recursion and any LinkedList methods.
+*/
+
 #include "list.h"
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-//implementations for the member functions of LinkedList class
+const int MAX_CHAR = 250;
+
+//implementations for the member functions of Doubly LinkedList class
 LinkedList::LinkedList(){
     head = nullptr;
     tail = nullptr;
@@ -21,7 +32,11 @@ LinkedList::~LinkedList(){
     size = 0;
 }
 
-// adding artist only
+/**
+ * LinkedList 
+ * 
+ * @param  {artist} anartist 
+ */
 void LinkedList::add(artist& anartist){
     cout << "...Calling add method on artist only..." << endl;
     node *newNode = new node(anartist);
@@ -37,6 +52,12 @@ void LinkedList::add(artist& anartist){
     size++;
 }
 
+/**
+ * LinkedList 
+ * 
+ * @param  {int} aviews : 
+ * @return {int}        : how many songs in the list has less than M views
+ */
 
 int LinkedList::find(int aviews){
     cout << "...Calling find method on..." << aviews << endl;
@@ -58,6 +79,11 @@ int LinkedList::find(int aviews){
     }
 }
 
+/**
+ * LinkedList 
+ * 
+ * @param  {song} asong 
+ */
 
 void LinkedList::add(song &asong){
     cout << "adding songs" << endl;
@@ -91,11 +117,17 @@ void LinkedList::add(song &asong){
     cout << "added";
 }
 
+/**
+ * LinkedList 
+ * 
+ * @param  {int} m : 
+ */
+
 void LinkedList::del(int m){
     cout << "...Calling delete method on..." << m << endl;
     node *ptr = head;
     //change the next and prev only if they are not null
-    while(ptr){
+    while(ptr->next){
         if (ptr->s.getViews() < m){
             if(ptr->next != NULL)
                 ptr->next->prev = ptr->prev;
@@ -111,32 +143,52 @@ void LinkedList::del(int m){
 }
 
     
+/**
+ * LinkedList 
+ * Display all artists in doubly Linked List
+ */
 void LinkedList::displayArtists(){
-    cout << "atist " << endl;
+    cout << "Displaying Artists" << endl;
     node *curr = head;
     for (curr = head; curr; curr = curr->next)
     {
+        cout << "--------------------" << endl;
         cout << "Name: " << curr->a.getName() << endl;
         cout << "Story: " << curr->a.getStory() << endl;
         cout << "Info: " << curr->a.getInfo() << endl;
+        cout << "--------------------" << endl;
     }
     cout << endl;
 }
 
+
+
+/**
+ * LinkedList 
+ * Display all songs in doubly Linked List
+ */
 void LinkedList::displaySongs(){
     cout << "s" << endl;
     node *curr = head;
     for (curr = head; curr; curr = curr->next)
     {
-        cout << "===========" << endl;
+        cout << "--------------------" << endl;
         cout << curr->s.getTitle() << endl;
         cout << curr->s.getLength() << endl;
         cout << "Views: " << curr->s.getViews() << endl;
         cout << curr->s.getLikes() << endl;
     }
-    cout << "=====";
+    cout << "--------------------" << endl;
 }
 
+
+
+/**
+ * LinkedList 
+ * 
+ * @param  {char*} fileName : 
+ * Modify the LinkedList to contain all data from file
+ */
 void LinkedList::loadArtistFromFile(char * fileName)
 {
     ifstream in;
@@ -173,6 +225,14 @@ void LinkedList::loadArtistFromFile(char * fileName)
     cout << "File closed" << endl;
 }
 
+
+
+/**
+ * LinkedList 
+ * 
+ * @param  {char*} Artist : (Artist name serves as file name)
+ * @return {LinkedList}   : the new LinkedList which contains all songs for artist
+ */
 LinkedList LinkedList::loadSongsFromArtist(char * Artist){
     LinkedList alist;
     ifstream in;
@@ -182,19 +242,18 @@ LinkedList LinkedList::loadSongsFromArtist(char * Artist){
     char currLength[MAX_CHAR];
     char currViews[MAX_CHAR];
     char currLikes[MAX_CHAR];
-    char ext[] = ".txt";
+    // char ext[] = ".txt";
 
     double clength;
     int cviews;
     int clikes;
 
-    char *fileName = strcat(Artist, ext);
+    // char *fileName = strcat(Artist, ext);
     
-
-    in.open(fileName);
+    in.open(Artist);
 	if(!in)
 	{
-		cerr << "Fail to open " << fileName << " load songs from artist for reading!" << endl;
+		cerr << "Fail to open " << Artist << " load songs from artist for reading!" << endl;
 		exit(1);
 	}
 
@@ -215,6 +274,17 @@ LinkedList LinkedList::loadSongsFromArtist(char * Artist){
     return alist;
 }
 
+
+
+/**
+ * LinkedList 
+ * 
+ * @param  {char*} fileName : 
+ * Get a linkedlist by Loading all artist from file 
+ * Add a new artist to said LinkedList
+ * Save said artist to the file
+ * While creating a new file for songs to be added to artist
+ */
 void LinkedList::saveArtistToFile(char *fileName){
     ofstream	out;
     int MAX_CHAR = 250;
@@ -247,35 +317,43 @@ void LinkedList::saveArtistToFile(char *fileName){
         out << curr->a.getInfo() << endl;
 	}
     out.close();
-    char ext[] = ".txt";
-
-    char *file = strcat(newName, ext);
-    cout << file << endl;
-
-    ofstream f(file);
+    
+    ofstream f(newName);
 }
 
-void LinkedList::saveSongsToArtist(char * Artist){
+
+
+/**
+ * LinkedList 
+ * 
+ * @param  {char*} Artist : Artist Name
+ * @return {LinkedList}   : Songs list for said artist
+ * Get a linkedlist by Loading all songs from file 
+ * Add a new song to said LinkedList
+ * Save said song to the file
+ * Returns the song list
+ */
+LinkedList LinkedList::saveSongsToArtist(char * Artist){
     ofstream out;
     int MAX_CHAR = 250;
     char currTitle[MAX_CHAR];
     char currLength[MAX_CHAR];
     char currViews[MAX_CHAR];
     char currLikes[MAX_CHAR];
-    char ext[] = ".txt";
+    // char ext[] = ".txt";
 
     double clength;
     int cviews;
     int clikes;
-    char *art = strcpy(art, Artist);
+    // char *art = strcpy(art, Artist);
 
-    char *fileName = strcat(Artist, ext);
-    cout << fileName << endl;
+    // char *fileName = strcat(Artist, ext);
+    // cout << fileName << endl;
 
-    out.open(fileName);
+    out.open(Artist);
 	if(!out)
 	{
-		cerr << "Fail to open " << fileName << " save songs to artist for reading!" << endl;
+		cerr << "Fail to open " << Artist << " save songs to artist for reading!" << endl;
 		exit(1);
 	}
 
@@ -294,9 +372,50 @@ void LinkedList::saveSongsToArtist(char * Artist){
     clength = atof(currLength);
     cviews = atoi(currViews);
     clikes = atoi(currLikes);
+    // song *Song = new song(currTitle, clength, cviews, clikes);
+    // LinkedList alist = LinkedList::loadSongsFromArtist(Artist);
+    // alist.add(*Song);
     song *Song = new song(currTitle, clength, cviews, clikes);
-    LinkedList alist = LinkedList::loadSongsFromArtist(art);
+    LinkedList alist = alist.loadSongsFromArtist(Artist);
     alist.add(*Song);
+    for(node * curr=alist.head; curr; curr=curr->next)
+	{
+		out << curr->s.getTitle() << endl;
+        out << curr->s.getLength() << endl;
+        out << curr->s.getViews() << endl;
+        out << curr->s.getLikes() << endl;
+	}
+    cout << "Hello";
+
+    out.close();
+    return alist;
+}
+
+/**
+ * 
+ * @param  {char*} Artist : The artist of the song
+ * @param  {char*} Song   : The song name
+ * @return {LinkedList}   : a song list after the change
+ * Load artist's song list from file
+ * Recursively find the song's name
+ * When found, together with findSong setViews/Likes
+ * then save the song to file
+ */
+void LinkedList::editViewsAndLikes(char *Artist, char * Song){
+    ofstream out;
+    displaySongs();
+    node *curr = head;
+    cout << curr->s.getTitle() << endl;
+    findSong(curr, Song);
+
+    out.open(Artist);
+	if(!out)
+	{
+		cerr << "Fail to open " << Artist << " save songs to artist for reading!" << endl;
+		exit(1);
+	}
+
+    LinkedList alist = LinkedList::loadSongsFromArtist(Artist);
 
     for(node * curr=alist.head; curr; curr=curr->next)
 	{
@@ -307,4 +426,44 @@ void LinkedList::saveSongsToArtist(char * Artist){
 	}
     
     out.close();
+    cout << "Done Editing";
+}
+
+/**
+ * LinkedList 
+ * 
+ * @param  {node*} curr  : 
+ * @param  {char*} Song  : 
+ * @return {LinkedList}  : 
+ * Using recursion to find the node in the Song list to edit views and likes
+ */
+void LinkedList::findSong(node * curr, char * Song){
+    if (curr->next == NULL){
+        int views, likes;
+	    cout << " Input your views ==== >> " << endl;
+        cin >> views;
+	    cin.ignore(MAX_CHAR, '\n');
+        cout << " Input your likes ==== >> " << endl;
+        cin >> likes;
+	    cin.ignore(MAX_CHAR, '\n');
+        curr->s.setViews(views);
+        curr->s.setLikes(likes);
+        return;
+    }
+    if (curr->s.getTitle()== Song){
+            int views, likes;
+	        cout << " Input your views ==== >> " << endl;
+            cin >> views;
+	        cin.ignore(MAX_CHAR, '\n');
+            cout << " Input your likes ==== >> " << endl;
+            cin >> likes;
+	        cin.ignore(MAX_CHAR, '\n');
+            curr->s.setViews(views);
+            curr->s.setLikes(likes);
+    }
+    else{
+        if(curr->next){
+            findSong(curr->next, Song);
+        }
+    }
 }

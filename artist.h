@@ -1,3 +1,11 @@
+/*
+	Name: 		Shijie Ren
+	Instructor: Li Liang
+	Date: 		Oct 15, 2020
+	Program: 	Project1/artist.h
+	Info: 		Header file of basic artist class - data only
+*/
+
 #include <iostream>
 using namespace std;
 #include <cstring>

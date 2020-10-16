@@ -1,3 +1,11 @@
+/*
+	Name: 		Shijie Ren
+	Instructor: Li Liang
+	Date: 		Oct 15, 2020
+	Program: 	Project1/list.h
+	Info: 		Header File for the LinkedList class
+*/
+
 #ifndef _LINKED_LIST_
 #define _LINKED_LIST_
 
@@ -57,7 +65,11 @@ public:
 
     void saveArtistToFile(char *name);
 
-    void saveSongsToArtist(char * Artist);
+    LinkedList saveSongsToArtist(char * Artist);
+
+    void findSong(node * curr, char* Song);
+
+    void editViewsAndLikes(char *Artist, char *Song);
 };
 
 #endif // _LINKED_LIST_
